@@ -1,10 +1,13 @@
 package service;
 
 import datastr.MyBST;
+import model.Patient;
+
 
 public class MainService {
 
 	public static void main(String[] args) {
+		System.out.println("-----------INT------------");
 		MyBST<Integer> bstForIntegers = new MyBST<Integer>();
 
 		try {
@@ -15,6 +18,23 @@ public class MainService {
 			bstForIntegers.add(7);//P: 10 (LC:6, RC:23); P:6 (RC:8); P: (LC:7)
 			bstForIntegers.print();
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		System.out.println("-----------PATIENTS------------");
+		
+		MyBST<Patient> bstPatients = new MyBST<Patient>();
+		
+		
+		try
+		{
+			bstPatients.add(new Patient("Jānis", "Bērziņs", 4));
+			bstPatients.add(new Patient("Līga", "Jaukā", 2)); 
+			bstPatients.add(new Patient("Baiba", "Kalniņa", 3));
+			bstPatients.add(new Patient("Juris", "Nejaukais", 5));
+			bstPatients.print();
+		
+		}catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 
