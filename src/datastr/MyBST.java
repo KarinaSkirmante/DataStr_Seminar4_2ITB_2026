@@ -31,18 +31,46 @@ public class MyBST<Ttype> {
 			throw new Exception("Koks ir pilns un nevar vairs pievienot jaunus elementus");
 		}
 		
-		addHelper(rootNode, element);
+		//koks ir tukšs, tad ieliekam pirmo kā root
+		if(isEmpty()) {
+			MyNode<Ttype> newNode = new MyNode<Ttype>(element);
+			rootNode = newNode;
+		}
+		else
+		{
+			addHelper(rootNode, element);
+		}
 		howManyElements++;
 	}
 	
 	private void addHelper(MyNode<Ttype> nodeTemp, Ttype element) {
 		if(nodeTemp != null) {
+			//parbaudam, uz kuru pusi elements jaāpārvieto
+			//ja lielāks, tad pa labi
 			if(((Comparable)element).compareTo(nodeTemp.getElement()) > 0) {
-				addHelper(nodeTemp.getRightChNode(), element);
+				//ja laba puse nekā nav, tad var ievieot jauno bloku
+				if(nodeTemp.getRightChNode() == null) {
+					MyNode<Ttype> newNode = new MyNode<Ttype>(element);
+					newNode.setParentNode(nodeTemp);
+					nodeTemp.setRightChNode(newNode);
+				}
+				else
+				{
+					addHelper(nodeTemp.getRightChNode(), element);
+				}
 			}
-			else
+			else//ja mazaks, tad pa kreisi
 			{
-				addHelper(nodeTemp.getLeftChNode(), element);
+				//ja kreisā pusē nekā nav
+				if(nodeTemp.getLeftChNode() == null) {
+					MyNode<Ttype> newNode = new MyNode<Ttype>(element);
+					newNode.setParentNode(nodeTemp);
+					nodeTemp.setLeftChNode(newNode);
+				}
+				else//kreisajā puse jau ir kāds bloks un tāpēc jāizsauc uz kreiso pusi sī pati funkcija
+				{
+					addHelper(nodeTemp.getLeftChNode(), element);
+				}
 			}
 			//TODO pabeigt
 			
