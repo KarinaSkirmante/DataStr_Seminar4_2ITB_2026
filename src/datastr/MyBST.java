@@ -78,7 +78,7 @@ public class MyBST<Ttype> {
 	
 	public void print() throws Exception {
 		if (isEmpty()) {
-			throw new Exception("Kaudze ir tukša un to nevar izprintēt");
+			throw new Exception("BST ir tukšs un to nevar izprintēt");
 		}
 
 		printHelper(rootNode);
@@ -102,4 +102,53 @@ public class MyBST<Ttype> {
 			}
 		}
 	}
+	
+	public boolean search(Ttype element) throws Exception{
+		if (isEmpty()) {
+			throw new Exception("BST ir tukšs un tajā nevar meklēt elementus");
+		}
+		
+		return searchHelper(rootNode, element);
+	}
+	
+	private boolean searchHelper(MyNode<Ttype> nodeTemp, Ttype element) {
+		if(nodeTemp!=null) {
+			//Ja sakrīt, tad atgriežam, ka ir atrasts
+			if(nodeTemp.getElement().equals(element)) {
+				return true;
+			}
+			else //ja nesakrīt, tad turpinam meklēt
+			{
+				//meklēšana notiks pa labo pusi
+				if(((Comparable)element).compareTo(nodeTemp.getElement()) > 0) {
+					//labais berns nemaz neeksistē
+					if(nodeTemp.getRightChNode()==null)
+					{
+						//tads elements nav atrodams un atgriežam false
+						return false;
+					}
+					else
+					{		
+						return searchHelper(nodeTemp.getRightChNode(), element);
+					}
+				}
+				else//meklēšanu jāmeklē pa kreiso pusi
+				{
+					//ja kreisais berns eneeksistē, tad elements tur arī nebūs un būs false
+					if(nodeTemp.getLeftChNode() == null) {
+						return false;
+					}
+					else
+					{
+						return searchHelper(nodeTemp.getLeftChNode(), element);
+					}
+				}
+			}
+			
+			
+		}
+		
+		return false;
+	}
+	
 }
