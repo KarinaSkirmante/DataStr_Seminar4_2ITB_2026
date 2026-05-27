@@ -3,79 +3,71 @@ package datastr;
 public class MyBST<Ttype> {
 	private MyNode<Ttype> rootNode = null;
 	private int howManyElements = 0;
-	
+
 	public int getHowManyElements() {
 		return howManyElements;
 	}
-	
-	//bezargumenta konstruktors būs no Object klases
-	
+
+	// bezargumenta konstruktors būs no Object klases
+
 	public boolean isEmpty() {
 		return (howManyElements == 0);
 	}
-	
+
 	public boolean isFull() {
-		try
-		{
+		try {
 			new MyNode<Character>('A');
 			return false;
-		}
-		catch (OutOfMemoryError error) {
+		} catch (OutOfMemoryError error) {
 			return true;
 		}
 	}
-	
-	
+
 	public void add(Ttype element) throws Exception {
-		if(isFull()) {
+		if (isFull()) {
 			throw new Exception("Koks ir pilns un nevar vairs pievienot jaunus elementus");
 		}
-		
-		//koks ir tukšs, tad ieliekam pirmo kā root
-		if(isEmpty()) {
+
+		// koks ir tukšs, tad ieliekam pirmo kā root
+		if (isEmpty()) {
 			MyNode<Ttype> newNode = new MyNode<Ttype>(element);
 			rootNode = newNode;
-		}
-		else
-		{
+		} else {
 			addHelper(rootNode, element);
 		}
 		howManyElements++;
 	}
-	
+
 	private void addHelper(MyNode<Ttype> nodeTemp, Ttype element) {
-		if(nodeTemp != null) {
-			//parbaudam, uz kuru pusi elements jaāpārvieto
-			//ja lielāks, tad pa labi
-			if(((Comparable)element).compareTo(nodeTemp.getElement()) > 0) {
-				//ja laba puse nekā nav, tad var ievieot jauno bloku
-				if(nodeTemp.getRightChNode() == null) {
+		if (nodeTemp != null) {
+			// parbaudam, uz kuru pusi elements jaāpārvieto
+			// ja lielāks, tad pa labi
+			if (((Comparable) element).compareTo(nodeTemp.getElement()) > 0) {
+				// ja laba puse nekā nav, tad var ievieot jauno bloku
+				if (nodeTemp.getRightChNode() == null) {
 					MyNode<Ttype> newNode = new MyNode<Ttype>(element);
 					newNode.setParentNode(nodeTemp);
 					nodeTemp.setRightChNode(newNode);
-				}
-				else
-				{
+				} else {
 					addHelper(nodeTemp.getRightChNode(), element);
 				}
-			}
-			else//ja mazaks, tad pa kreisi
+			} else// ja mazaks, tad pa kreisi
 			{
-				//ja kreisā pusē nekā nav
-				if(nodeTemp.getLeftChNode() == null) {
+				// ja kreisā pusē nekā nav
+				if (nodeTemp.getLeftChNode() == null) {
 					MyNode<Ttype> newNode = new MyNode<Ttype>(element);
 					newNode.setParentNode(nodeTemp);
 					nodeTemp.setLeftChNode(newNode);
-				}
-				else//kreisajā puse jau ir kāds bloks un tāpēc jāizsauc uz kreiso pusi sī pati funkcija
+				} else// kreisajā puse jau ir kāds bloks un tāpēc jāizsauc uz kreiso pusi sī pati
+						// funkcija
 				{
 					addHelper(nodeTemp.getLeftChNode(), element);
 				}
 			}
-			
+
 		}
 	}
-	
+
 	public void print() throws Exception {
 		if (isEmpty()) {
 			throw new Exception("BST ir tukšs un to nevar izprintēt");
@@ -102,143 +94,160 @@ public class MyBST<Ttype> {
 			}
 		}
 	}
-	
-	public boolean search(Ttype element) throws Exception{
+
+	public boolean search(Ttype element) throws Exception {
 		if (isEmpty()) {
 			throw new Exception("BST ir tukšs un tajā nevar meklēt elementus");
 		}
-		
+
 		return searchHelper(rootNode, element);
 	}
-	
+
 	private boolean searchHelper(MyNode<Ttype> nodeTemp, Ttype element) {
-		if(nodeTemp!=null) {
-			//Ja sakrīt, tad atgriežam, ka ir atrasts
-			if(nodeTemp.getElement().equals(element)) {
+		if (nodeTemp != null) {
+			// Ja sakrīt, tad atgriežam, ka ir atrasts
+			if (nodeTemp.getElement().equals(element)) {
 				return true;
-			}
-			else //ja nesakrīt, tad turpinam meklēt
+			} else // ja nesakrīt, tad turpinam meklēt
 			{
-				//meklēšana notiks pa labo pusi
-				if(((Comparable)element).compareTo(nodeTemp.getElement()) > 0) {
-					//labais berns nemaz neeksistē
-					if(nodeTemp.getRightChNode()==null)
-					{
-						//tads elements nav atrodams un atgriežam false
+				// meklēšana notiks pa labo pusi
+				if (((Comparable) element).compareTo(nodeTemp.getElement()) > 0) {
+					// labais berns nemaz neeksistē
+					if (nodeTemp.getRightChNode() == null) {
+						// tads elements nav atrodams un atgriežam false
 						return false;
-					}
-					else
-					{		
+					} else {
 						return searchHelper(nodeTemp.getRightChNode(), element);
 					}
-				}
-				else//meklēšanu jāmeklē pa kreiso pusi
+				} else// meklēšanu jāmeklē pa kreiso pusi
 				{
-					//ja kreisais berns eneeksistē, tad elements tur arī nebūs un būs false
-					if(nodeTemp.getLeftChNode() == null) {
+					// ja kreisais berns eneeksistē, tad elements tur arī nebūs un būs false
+					if (nodeTemp.getLeftChNode() == null) {
 						return false;
-					}
-					else
-					{
+					} else {
 						return searchHelper(nodeTemp.getLeftChNode(), element);
 					}
 				}
 			}
-			
-			
+
 		}
-		
+
 		return false;
 	}
-	
-	public void remove(Ttype element) throws Exception{
+
+	public void remove(Ttype element) throws Exception {
 		if (isEmpty()) {
 			throw new Exception("BST ir tukšs un tajā nevar dzēst elementus");
 		}
-		
+
 		removeHelper(rootNode, element);
+		howManyElements--;
 	}
-	
+
 	private void removeHelper(MyNode<Ttype> nodeTemp, Ttype element) {
-		if(nodeTemp!=null) {
-			if(nodeTemp.getElement().equals(element))
-			{
-				//apstrdāt visus četrus dzēšanas gadījumus
-				
-				//ja elements ir lapa jeb nav neviena bērna
-				if(nodeTemp.getLeftChNode()==null 
-						&& nodeTemp.getRightChNode()==null) {
-					
+		if (nodeTemp != null) {
+			if (nodeTemp.getElement().equals(element)) {
+				// apstrdāt visus četrus dzēšanas gadījumus
+
+				// ja elements ir lapa jeb nav neviena bērna
+				if (nodeTemp.getLeftChNode() == null && nodeTemp.getRightChNode() == null) {
+
 					MyNode<Ttype> parentNode = nodeTemp.getParentNode();
-					
-					//jānoskaidro, kurā puse ir šis berns
-					//ja dzēšamais elments ir lielāks par savu vecāku, tad tas ir labais bērns
-					if(((Comparable)(nodeTemp.getElement())).compareTo(parentNode.getElement()) > 0) {
+
+					// jānoskaidro, kurā puse ir šis berns
+					// ja dzēšamais elments ir lielāks par savu vecāku, tad tas ir labais bērns
+					if (((Comparable) (nodeTemp.getElement())).compareTo(parentNode.getElement()) > 0) {
 						parentNode.setRightChNode(null);
-					}
-					else//ja dzēšamais elements ir mazaks par savuvecāku, tad viņš ir kā kreisais bērns bijis
+					} else// ja dzēšamais elements ir mazaks par savuvecāku, tad viņš ir kā kreisais bērns
+							// bijis
 					{
 						parentNode.setLeftChNode(null);
 					}
-						
-				}//ja ir tikai kreisais bērns
-				else if (nodeTemp.getLeftChNode()!=null 
-						&& nodeTemp.getRightChNode()==null) {
+
+				} // ja ir tikai kreisais bērns
+				else if (nodeTemp.getLeftChNode() != null && nodeTemp.getRightChNode() == null) {
 					MyNode<Ttype> parentNode = nodeTemp.getParentNode();
 					MyNode<Ttype> leftChNode = nodeTemp.getLeftChNode();
-					//vai dzēšamais elements ir lielāks par savu vecāku
-					//kā labais bērns
-					if(((Comparable)(nodeTemp.getElement())).compareTo(parentNode.getElement()) > 0) {
+					// vai dzēšamais elements ir lielāks par savu vecāku
+					// kā labais bērns
+					if (((Comparable) (nodeTemp.getElement())).compareTo(parentNode.getElement()) > 0) {
+						parentNode.setRightChNode(leftChNode);
+						leftChNode.setParentNode(parentNode);
+					} else {
 						parentNode.setLeftChNode(leftChNode);
 						leftChNode.setParentNode(parentNode);
 					}
-					else
-					{
-						parentNode.setRightChNode(leftChNode);
-						leftChNode.setParentNode(parentNode);
-					}
 				}
-				//ja ir tikai labais bērns
-				else if(nodeTemp.getLeftChNode()==null 
-						&& nodeTemp.getRightChNode()!=null) {
-					
+				// ja ir tikai labais bērns
+				else if (nodeTemp.getLeftChNode() == null && nodeTemp.getRightChNode() != null) {
+
 					MyNode<Ttype> parentNode = nodeTemp.getParentNode();
 					MyNode<Ttype> rightChNode = nodeTemp.getRightChNode();
-					//vai dzēšamais elements ir lielāks par savu vecāku
-					//kā labais bērns
-					if(((Comparable)(nodeTemp.getElement())).compareTo(parentNode.getElement()) > 0) {
+					// vai dzēšamais elements ir lielāks par savu vecāku
+					// kā labais bērns
+					if (((Comparable) (nodeTemp.getElement())).compareTo(parentNode.getElement()) > 0) {
 						parentNode.setRightChNode(rightChNode);
 						rightChNode.setParentNode(parentNode);
-					}
-					else
-					{
+					} else {
 						parentNode.setLeftChNode(rightChNode);
 						rightChNode.setParentNode(parentNode);
 					}
-				}
-				else //ir abi bērni
+				} else // ir abi bērni
 				{
-					//TODO uztaisīt tuvakā elementa atrašanas algoritmu, lai to ievietu dzēšajamā elementā
-					//TODO notestēt dzēšanu arī MainService
+					Ttype elementSuccessor = getSuccessor(nodeTemp);
+					nodeTemp.setElement(elementSuccessor);
 				}
-				
-			}
-			else
-			{
-				//pa kursu pusi turpināt meklēšanu
-				//pa labo pusi
-				if(((Comparable)element).compareTo(nodeTemp.getElement()) > 0) {
-					if(nodeTemp.getRightChNode()!=null) {
+
+			} else {
+				// pa kursu pusi turpināt meklēšanu
+				// pa labo pusi
+				if (((Comparable) element).compareTo(nodeTemp.getElement()) > 0) {
+					if (nodeTemp.getRightChNode() != null) {
 						removeHelper(nodeTemp.getRightChNode(), element);
 					}
-				}
-				else//meklēšanu jāturpina pa kreiso pusi
+				} else// meklēšanu jāturpina pa kreiso pusi
 				{
-					if(nodeTemp.getLeftChNode()!=null) {
+					if (nodeTemp.getLeftChNode() != null) {
 						removeHelper(nodeTemp.getLeftChNode(), element);
 					}
 				}
 			}
 		}
 	}
+
+	private Ttype getSuccessor(MyNode<Ttype> nodeTemp) {
+		// pavirzāmies uz labo pusi un atrodam kreisajā pusē lapu
+		MyNode<Ttype> currentNode = nodeTemp.getRightChNode();
+
+		//pārbaudam, vai vispār ir currentNode kreisais bērns, uz kuru pārvirzīties
+		if(currentNode.getLeftChNode() == null && currentNode.getLeftChNode() != null) {
+			return getSuccessor(currentNode.getRightChNode());
+		}
+		else if (currentNode.getLeftChNode() == null && currentNode.getLeftChNode() == null) {
+			currentNode.getParentNode().setRightChNode(null);
+			return currentNode.getElement();
+		}
+		// atrodam pašu kreisāko bērnu šajā apakškokā
+		while (currentNode.getLeftChNode() != null) {
+			currentNode = currentNode.getLeftChNode();
+		}
+
+		// var gadīties, ka šis kreisākais bērns nav lapa un piesaistīts labais bērns, tad jāsasaistē viņa vecāks ar
+		// labo bērnu kā kreiso bērnu
+		if (currentNode.getRightChNode() != null && currentNode.getRightChNode() == null) {
+			MyNode<Ttype> currentParentNode = currentNode.getParentNode();
+			MyNode<Ttype> currentRightChildNode = currentNode.getRightChNode();
+			currentParentNode.setLeftChNode(currentRightChildNode);
+			currentRightChildNode.setParentNode(currentParentNode);
+		}
+		else//ja ir labais, tad jānoņem no vecāka saite uz šo kreiso bērnu
+		{
+			currentNode.getParentNode().setLeftChNode(null);
+		}
+
+		return currentNode.getElement();
+
+	}
+
+	
 }
